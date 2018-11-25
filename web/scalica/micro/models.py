@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.db import models
 from django.forms import ModelForm, TextInput
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Post(models.Model):
   user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -43,3 +45,11 @@ class MyUserCreationForm(UserCreationForm):
     help_texts = {
       'username' : '',
     }
+
+@receiver(post_save, sender=Following)
+def trigger(sender, instance, created, **kwargs):
+  print 'hit trigger'
+  if created:
+    print 'saved new Following'
+    print instance.follower
+    print instance.followee
