@@ -97,15 +97,27 @@ def post(request):
     form = PostForm
   return render(request, 'micro/post.html', {'form' : form})
 
+def make_new_follow(request):
+  form = FollowingForm(request.POST)
+  new_follow = form.save(commit=False)
+  new_follow.follower = request.user
+  new_follow.follow_date = timezone.now()
+  new_follow.save()
+
 @login_required
 def follow(request):
   if request.method == 'POST':
-    form = FollowingForm(request.POST)
-    new_follow = form.save(commit=False)
-    new_follow.follower = request.user
-    new_follow.follow_date = timezone.now()
-    new_follow.save()
+    make_new_follow(request)
     return home(request)
   else:
     form = FollowingForm
   return render(request, 'micro/follow.html', {'form' : form})
+
+@login_required
+def suggest(request):
+  if request.method == 'POST':
+    make_new_follow(request)
+    return home(request)
+  else:
+    form = FollowingForm(pk_list=[5, 6])
+  return render(request, 'micro/suggest.html', {'form' : form})

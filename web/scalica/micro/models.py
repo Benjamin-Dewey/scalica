@@ -40,6 +40,12 @@ class FollowingForm(ModelForm):
     model = Following
     fields = ('followee',)
 
+  def __init__(self, *args, **kwargs):
+    pk_list = kwargs.pop('pk_list', None)
+    super(FollowingForm, self).__init__(*args, **kwargs)
+    if pk_list:
+      self.fields['followee'].queryset = User.objects.filter(pk__in=pk_list)
+
 class MyUserCreationForm(UserCreationForm):
   class Meta(UserCreationForm.Meta):
     help_texts = {
