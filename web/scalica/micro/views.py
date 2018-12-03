@@ -7,6 +7,11 @@ from django.shortcuts import render
 from django.utils import timezone
 from .models import Following, Post, FollowingForm, PostForm, MyUserCreationForm
 
+import grpc
+
+import suggestions_pb2
+import suggestions_pb2_grpc
+
 
 # Anonymous views
 #################
@@ -104,6 +109,14 @@ def make_new_follow(request):
   new_follow.follow_date = timezone.now()
   new_follow.save()
 
+def get_following_suggestions(user_id):
+  with grpc.insecure_channel('localhost:50051') as channel:
+    stub = suggestions_pb2_grpc.SuggestionsStub(channel)
+    request = suggestions_pb2.SuggestionsRequest()
+    request.user_id = user_id
+    response = stub.Suggest(request)
+  return response.suggestions
+
 @login_required
 def follow(request):
   if request.method == 'POST':
@@ -119,5 +132,7 @@ def suggest(request):
     make_new_follow(request)
     return home(request)
   else:
-    form = FollowingForm(pk_list=[5, 6])
+    user_id = request.user.id
+    suggestions = get_following_suggestions(user_id=user_id)
+    form = FollowingForm(pk_list=suggestions)
   return render(request, 'micro/suggest.html', {'form' : form})
