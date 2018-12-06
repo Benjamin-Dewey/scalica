@@ -14,7 +14,7 @@ class Suggestions(suggestions_pb2_grpc.SuggestionsServicer):
     def Suggest(self, request, context):
         user_id = request.user_id
         
-        db = pickledb.load('suggestions.db', False)
+        db = pickledb.load('suggestions.db', False, False)
         db_value = db.get(str(user_id))
         suggestions = [] if not db_value else db_value
 
