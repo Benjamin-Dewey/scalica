@@ -1,8 +1,10 @@
 First installation:
 
 Install required packages.
-$ sudo apt-get update; sudo apt-get install mysql-server libmysqlclient-dev python-dev python-virtualenv
+$ sudo apt-get update; sudo apt-get install mysql-server libmysqlclient-dev python-dev python-virtualenv git
 (Set a mysql root password)
+
+$ git clone https://github.com/Benjamin-Dewey/scalica.git && cd scalica
 
 $ ./first_install.sh
 
