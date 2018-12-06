@@ -2,20 +2,21 @@ from concurrent import futures
 import time
 
 import grpc
+import pickledb
 
 import suggestions_pb2
 import suggestions_pb2_grpc
 
-_ONE_DAY_IN_SECONDS = 60 * 60 * 24
+ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 
 class Suggestions(suggestions_pb2_grpc.SuggestionsServicer):
     def Suggest(self, request, context):
         user_id = request.user_id
         
-        # TODO: using user_id get the list of suggestions here
-        # 
-        suggestions = [5, 6]
+        db = pickledb.load('suggestions.db', False)
+        db_value = db.get(str(user_id))
+        suggestions = [] if not db_value else db_value
 
         response = suggestions_pb2.SuggestionsReply()
         response.suggestions.extend(suggestions)
@@ -30,7 +31,7 @@ def serve():
     print 'Starting suggestions server. Listening on port 50051.'
     try:
         while True:
-            time.sleep(_ONE_DAY_IN_SECONDS)
+            time.sleep(ONE_DAY_IN_SECONDS)
     except KeyboardInterrupt:
         server.stop(0)
 
