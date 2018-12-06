@@ -107,6 +107,7 @@ def make_new_follow(request):
   new_follow = form.save(commit=False)
   new_follow.follower = request.user
   new_follow.follow_date = timezone.now()
+  new_follow.id = int(request.user.id) << 17
   new_follow.save()
 
 def get_following_suggestions(user_id):
