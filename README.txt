@@ -22,9 +22,12 @@ $ python manage.py migrate
 
 
 # After the first installation, from the project's directory
-Run the server:
+Run the server, mapreduce job, and rpc server:
 $ source ./env/bin/activate
-$ cd web/scalica
-$ python manage.py runserver
+$ cd suggestions
+$ python job.py
+$ python server.py
+$ cd ../web/scalica
+$ python manage.py runserver 0.0.0.0:8000
 
-Access the site at http://localhost:8000/micro
+Access the site at http://[external_ip]:8000/micro
