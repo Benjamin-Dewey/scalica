@@ -5,4 +5,5 @@ sqlparse==0.2.1
 mysql-connector==2.1.6
 pickleDB== 0.8.1
 grpcio==1.17.0
+grpcio-tools==1.17.0
 
