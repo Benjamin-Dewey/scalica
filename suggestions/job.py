@@ -25,6 +25,16 @@ for user in users:
   mycursor.execute("SELECT * FROM micro_following WHERE follower_id = " + str(user_id))
   followings = mycursor.fetchall()
   following_dict[user_id] = [following[2] for following in followings]
+
+file = open("followRelationships.csv", "w+")
+for user in following_dict:
+    file.write(user + ",")
+    for array in following_dict[user]:
+        for id in array:
+            file.write(str(id)+"-")
+        file.write(",")
+    file.write("\n")
+file.close()
   
 # TODO: start a map reduce job and replace the
 # right side of the equal sign with the results
