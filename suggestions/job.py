@@ -26,7 +26,7 @@ for user in users:
   followings = mycursor.fetchall()
   following_dict[user_id] = [following[2] for following in followings]
 
-file = open("followRelationships.csv", "w+")
+file = open("followRelationships.txt", "w+")
 for user in following_dict:
     file.write(user + ",")
     for array in following_dict[user]:
