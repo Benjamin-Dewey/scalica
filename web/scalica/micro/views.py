@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
-from .models import Following, Post, FollowingForm, PostForm, MyUserCreationForm
+from .models import Following, ReverseFollowing, Post, FollowingForm, PostForm, MyUserCreationForm
 
 import grpc
 
@@ -24,7 +24,7 @@ def index(request):
 def anon_home(request):
   return render(request, 'micro/public.html')
 
-def stream(request, user_id):  
+def stream(request, user_id):
   # See if to present a 'follow' button
   form = None
   if request.user.is_authenticated() and request.user.id != int(user_id):
@@ -41,7 +41,7 @@ def stream(request, user_id):
     posts = paginator.page(page)
   except PageNotAnInteger:
     # If page is not an integer, deliver first page.
-    posts = paginator.page(1) 
+    posts = paginator.page(1)
   except EmptyPage:
     # If page is out of range (e.g. 9999), deliver last page of results.
     posts = paginator.page(paginator.num_pages)
@@ -103,12 +103,26 @@ def post(request):
   return render(request, 'micro/post.html', {'form' : form})
 
 def make_new_follow(request):
+  follower = request.user
+  followee = User.objects.get(id=int(request.POST['followee']))
+
   form = FollowingForm(request.POST)
-  new_follow = form.save(commit=False)
-  new_follow.follower = request.user
-  new_follow.follow_date = timezone.now()
-  new_follow.id = int(request.user.id) << 17
-  new_follow.save()
+  follow = form.save(commit=False)
+  reverse_follow = ReverseFollowing()
+
+  follow.follower = follower
+  reverse_follow.follower = follower
+  reverse_follow.followee = followee
+
+  date = timezone.now()
+  follow.follow_date = date
+  reverse_follow.follow_date = date
+
+  follow.id = int(follower.id) << 13
+  reverse_follow.id = int(followee.id) << 17
+
+  follow.save()
+  reverse_follow.save()
 
 def get_following_suggestions(user_id):
   with grpc.insecure_channel('localhost:50051') as channel:
@@ -137,4 +151,3 @@ def suggest(request):
     suggestions = get_following_suggestions(user_id=user_id)
     form = FollowingForm(pk_list=suggestions)
   return render(request, 'micro/suggest.html', {'form' : form})
-  

@@ -26,6 +26,17 @@ class Following(models.Model):
   def __str__(self):
     return self.follower.username + "->" + self.followee.username
 
+class ReverseFollowing(models.Model):
+  id = models.IntegerField(primary_key=True)
+
+  follower = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               related_name="user_follows")
+  followee = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               related_name="user_followed")
+  follow_date = models.DateTimeField('follow data')
+  def __str__(self):
+    return self.followee.username + "->" + self.follower.username
+
 # Model Forms
 class PostForm(ModelForm):
   class Meta:
