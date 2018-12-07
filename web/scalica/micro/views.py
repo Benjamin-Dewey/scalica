@@ -118,8 +118,8 @@ def make_new_follow(request):
   follow.follow_date = date
   reverse_follow.follow_date = date
 
-  follow.id = int(follower.id) << 13
-  reverse_follow.id = int(followee.id) << 17
+  follow.id = (int(follower.id) << 13) + Following.objects.count()
+  reverse_follow.id = (int(followee.id) << 17) + ReverseFollowing.objects.count()
 
   follow.save()
   reverse_follow.save()
