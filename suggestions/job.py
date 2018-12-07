@@ -4,6 +4,8 @@
 
 import mysql.connector
 import pickledb
+import os
+
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -37,13 +39,15 @@ for user in users:
 
 file = open("followRelationships.txt", "w+")
 for user in following_dict:
-    file.write(user + ",")
+    file.write(str(user) + ",")
     for array in following_dict[user]:
         for id in array:
             file.write(str(id)+"-")
         file.write(",")
     file.write("\n")
 file.close()
+
+os.system('./upload.sh')
 
 # TODO: start a map reduce job and replace the
 # right side of the equal sign with the results
