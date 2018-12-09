@@ -149,5 +149,5 @@ def suggest(request):
   else:
     user_id = request.user.id
     suggestions = get_following_suggestions(user_id=user_id)
-    form = FollowingForm(pk_list=suggestions)
+    form = FollowingForm(id_list=suggestions)
   return render(request, 'micro/suggest.html', {'form' : form})
