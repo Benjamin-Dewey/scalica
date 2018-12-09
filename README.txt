@@ -21,13 +21,14 @@ $ python manage.py makemigrations micro
 $ python manage.py migrate
 
 
-# After the first installation, from the project's directory
-Run the server, mapreduce job, and rpc server:
+After the first installation, from the project's directory
+run the scalica server and suggestions server
 $ source ./env/bin/activate
 $ cd suggestions
-$ python job.py
 $ python server.py
 $ cd ../web/scalica
 $ python manage.py runserver 0.0.0.0:8000
 
 Access the site at http://[external_ip]:8000/micro
+
+TODO: Explain how to schedule up.py and down.py
