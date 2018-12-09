@@ -2,13 +2,13 @@ import mysql.connector
 import os
 
 def upload():
-    db = mysql.connector.connect(
+    cnx = mysql.connector.connect(
       host="localhost",
       user="appserver",
       passwd="foobarzoot",
       database="scalica"
     )
-    cursor = db.cursor()
+    cursor = cnx.cursor()
 
     cursor.execute("SELECT * FROM auth_user")
     users = cursor.fetchall()
@@ -31,6 +31,9 @@ def upload():
         [following[followee_id_index] for following in followings],
         [following[following_id_index] for following in rev_followings]
       ]
+
+    cursor.close()
+    cnx.close()
 
     file_name = "relationships.txt"
     file = open(file_name, "w+")

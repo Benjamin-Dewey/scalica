@@ -25,16 +25,19 @@ def download():
 
     if (not os.path.isfile(file_name)): return # there was no file to download
 
-    db = mysql.connector.connect(
+    cnx = mysql.connector.connect(
       host="localhost",
       user="appserver",
       passwd="foobarzoot",
       database="scalica"
     )
-    cursor = db.cursor()
+    cursor = cnx.cursor()
 
     cursor.execute("SELECT * FROM auth_user")
     users = cursor.fetchall()
+
+    cursor.close()
+    cnx.close()
 
     # create a process pool and dispatch
     # a call to write_suggestions for each user
