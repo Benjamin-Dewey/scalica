@@ -47,7 +47,7 @@ def upload():
     file.close()
 
     # upload file_name to the bucket
-    command = "gsutil cp " + file_name + " gs://scalica-bucket/input/" + file_name
+    command = "gsutil cp " + file_name + " gs://lswa-scalica/input/" + file_name
     os.system(command)
 
 if __name__ == '__main__':
