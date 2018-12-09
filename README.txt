@@ -22,7 +22,7 @@ $ python manage.py migrate
 
 
 After the first installation, from the project's directory
-run the scalica server and suggestions server
+run the django app server and the suggestions rpc server
 $ source ./env/bin/activate
 $ cd suggestions
 $ python server.py &
