@@ -35,7 +35,7 @@ def upload():
     cursor.close()
     cnx.close()
 
-    file_name = "relationships.txt"
+    file_name = "df_input.txt"
     file = open(file_name, "w+")
     for user in following_dict:
         file.write(str(user) + ",")
@@ -47,7 +47,7 @@ def upload():
     file.close()
 
     # upload file_name to the bucket
-    command = "gsutil cp " + file_name + " gs://scalica-bucket/input/file.txt"
+    command = "gsutil cp " + file_name + " gs://scalica-bucket/input/" + file_name
     os.system(command)
 
 if __name__ == '__main__':
