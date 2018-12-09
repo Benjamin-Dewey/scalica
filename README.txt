@@ -25,9 +25,9 @@ After the first installation, from the project's directory
 run the scalica server and suggestions server
 $ source ./env/bin/activate
 $ cd suggestions
-$ python server.py
+$ python server.py &
 $ cd ../web/scalica
-$ python manage.py runserver 0.0.0.0:8000
+$ python manage.py runserver 0.0.0.0:8000 &
 
 Access the site at http://[external_ip]:8000/micro
 
