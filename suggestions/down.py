@@ -12,7 +12,7 @@ def handle_suggestions(user):
     # this is a list of the top ten highest ranked suggested
     # users to follow; if there are no suggestions or the user_id
     # is absent from the file just make an empty array
-    suggestions = # TODO
+    suggestions = [] # TODO
 
     db = pickledb.load('suggestions.db', False, False)
     db.set(str(user_id), suggestions)
