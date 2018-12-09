@@ -50,7 +50,7 @@ def download():
     cnx.close()
 
     # create a process pool and dispatch
-    # a call to write_suggestions for each user
+    # a call to handle_suggestions for each user
     pool = Pool()
     pool.map(handle_suggestions, users)
 
