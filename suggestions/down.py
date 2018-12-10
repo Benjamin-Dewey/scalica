@@ -28,10 +28,10 @@ def handle_suggestions(user):
         if int(user) == user_id: suggestions.append([suggUser, strength])
 
     # Pick top 10 suggestions
-    suggestions = [sugg[0] for sugg in sorted(suggestions, key=lambda x: x[1], reverse=True)[:10]]
+    top_suggestions = [sugg[0] for sugg in sorted(suggestions, key=lambda x: x[1], reverse=True)[:10]]
 
     db = pickledb.load('suggestions.db', False, False)
-    db.set(str(user_id), suggestions)
+    db.set(str(user_id), top_suggestions)
     db.dump()
 
 def download():
