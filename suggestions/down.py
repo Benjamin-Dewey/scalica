@@ -7,7 +7,7 @@ bucket_path = "lswa-scalica/output/"
 output_file_name = "df_output.txt-00000-of-00001"
 
 def handle_suggestions(user):
-    user_id = user[0]
+    user_id = int(user[0])
 
     # read from output_file_name to create suggestions for user_id
     # this is a list of the top ten highest ranked suggested
@@ -22,10 +22,10 @@ def handle_suggestions(user):
 
     # Loop thru array, put all [suggUser, strength] for user_id into suggestions
     for sugg in input:
-        user = sugg[sugg.find(",")+1:sugg.find(":")]
-        suggUser = sugg[0:sugg.find(",")]
-        strength = sugg[sugg.find(":")+2:len(sugg)]
-        if int(user) == user_id: suggestions.append([suggUser, strength])
+        user = int(sugg[sugg.find(",")+1:sugg.find(":")])
+        suggUser = int(sugg[0:sugg.find(",")])
+        strength = int(sugg[sugg.find(":")+2:len(sugg)])
+        if user == user_id: suggestions.append([suggUser, strength])
 
     # Pick top 10 suggestions
     top_suggestions = [sugg[0] for sugg in sorted(suggestions, key=lambda x: x[1], reverse=True)[:10]]
