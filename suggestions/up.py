@@ -12,6 +12,8 @@ def upload():
 
     cursor.execute("SELECT * FROM auth_user")
     users = cursor.fetchall()
+    
+    if len(users) == 0: return
 
     following_dict = {}
     user_id_index = 0
