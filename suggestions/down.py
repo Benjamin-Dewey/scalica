@@ -22,13 +22,18 @@ def handle_suggestions(user):
 
     # Loop thru array, put all [suggUser, strength] for user_id into suggestions
     for sugg in input:
-        user = int(sugg[sugg.find(",")+1:sugg.find(":")])
-        suggUser = int(sugg[0:sugg.find(",")])
-        strength = int(sugg[sugg.find(":")+2:len(sugg)])
-        if user == user_id: suggestions.append([suggUser, strength])
+        if sugg:
+            print(sugg)
+            user = int(sugg[sugg.find(",")+1:sugg.find(":")])
+            suggUser = int(sugg[0:sugg.find(",")])
+            strength = int(sugg[sugg.find(":")+2:len(sugg)])
+            if user == user_id: suggestions.append([suggUser, strength])
 
-    # Pick top 10 suggestions
-    top_suggestions = [sugg[0] for sugg in sorted(suggestions, key=lambda x: x[1], reverse=True)[:10]]
+    # Pick top 3 suggestions
+    top_suggestions = [sugg[0] for sugg in sorted(suggestions, key=lambda x: x[1], reverse=True)[:3]]
+    print('user:', user_id)
+    print('top suggestions', top_suggestions)
+
 
     db = pickledb.load('suggestions.db', False, False)
     db.set(str(user_id), top_suggestions)
@@ -45,10 +50,6 @@ def download():
     os.system(command)
 
     if (not os.path.isfile(output_file_name)): return # there was no file to download
-
-    # delete the remote output file from the bucket
-    command = "gsutil rm gs://" + bucket_path + output_file_name
-    os.system(command)
 
     cnx = mysql.connector.connect(
       host="localhost",
@@ -68,6 +69,10 @@ def download():
     # a call to handle_suggestions for each user
     pool = Pool()
     pool.map(handle_suggestions, users)
+
+    # delete the remote output file from the bucket
+    command = "gsutil rm gs://" + bucket_path + output_file_name
+    os.system(command)
 
 if __name__ == '__main__':
     download()
