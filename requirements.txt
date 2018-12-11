@@ -7,3 +7,4 @@ grpcio==1.17.0
 grpcio-tools==1.17.0
 google-compute-engine==2.8.3
 git+https://github.com/Benjamin-Dewey/pickledb
+apache-beam[gcp]
