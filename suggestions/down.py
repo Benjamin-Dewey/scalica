@@ -23,7 +23,6 @@ def handle_suggestions(user):
     # Loop thru array, put all [suggUser, strength] for user_id into suggestions
     for sugg in input:
         if sugg:
-            print(sugg)
             user = int(sugg[sugg.find(",")+1:sugg.find(":")])
             suggUser = int(sugg[0:sugg.find(",")])
             strength = int(sugg[sugg.find(":")+2:len(sugg)])
@@ -31,9 +30,6 @@ def handle_suggestions(user):
 
     # Pick top 3 suggestions
     top_suggestions = [sugg[0] for sugg in sorted(suggestions, key=lambda x: x[1], reverse=True)[:3]]
-    print('user:', user_id)
-    print('top suggestions', top_suggestions)
-
 
     db = pickledb.load('suggestions.db', False, False)
     db.set(str(user_id), top_suggestions)
