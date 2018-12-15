@@ -9,6 +9,9 @@ output_file_name = "df_output.txt-00000-of-00001"
 def handle_suggestions(user):
     user_id = int(user[0])
 
+    cursor.execute("SELECT * FROM micro_following WHERE follower_id = " + str(user_id))
+    followees = [followee[2] for followee in cursor.fetchall()]
+
     # read from output_file_name to create suggestions for user_id
     # this is a list of the top ten highest ranked suggested
     # users to follow; if there are no suggestions or the user_id
@@ -27,7 +30,7 @@ def handle_suggestions(user):
             user = int(sugg[sugg.find(",")+1:sugg.find(":")])
             suggUser = int(sugg[0:sugg.find(",")])
             strength = int(sugg[sugg.find(":")+2:len(sugg)])
-            if user == user_id: suggestions.append([suggUser, strength])
+            if user == user_id and suggUser not in followees: suggestions.append([suggUser, strength])
 
     # Pick top 3 suggestions
     top_suggestions = [sugg[0] for sugg in sorted(suggestions, key=lambda x: x[1], reverse=True)[:3]]

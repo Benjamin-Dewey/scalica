@@ -1,0 +1,58 @@
+# Create VM
+Go to console.cloud.google.com -> 'Compute Engine' -> 'VM Instances' -> 'Create Instance'
+In settings:
+  'Firewalls' -> 'Allow HTTP traffic'
+  'Management, security disks, networking, sole tenancy' -> 'Networking' -> 'Network interface' -> 'External IP' -> 'Create IP Address' and record this for future use
+  Finish creating the VM Instance
+
+# Install scalica
+Go to VM instances page and for your VM instance, click SSH under Connect.
+sudo -i
+apt-get update && apt-get install git-core && git clone https://github.com/Benjamin-Dewey/scalica.git && cd scalica
+
+# Set up scalica
+apt-get install build-essential mysql-server default-libmysqlclient-dev python-dev python-virtualenv
+./first_install.sh && cd db && ./install_db.sh && cd ..
+source ./env/bin/activate && cd web/scalica && python manage.py makemigrations micro && python manage.py migrate && cd ../..
+scp google credentials to VM
+mv /home/tommy/service-account-file.json .
+export GOOGLE_APPLICATION_CREDENTIALS="/root/scalica/service-account-file.json"
+
+# Run scalica web server and suggestions RPC from project root:
+source ./env/bin/activate
+cd suggestions && python server.py &
+cd web/scalica && python manage.py runserver 0.0.0.0:80 &
+
+# Run batch operation jobs:
+source ./env/bin/activate
+cd suggestions && python up.py && cd ..
+cd dataflow && python follower_suggestion_job.py && cd ..
+cd suggestions && python down.py && cd ..
+
+# Access scalica website remotely
+Access scalica on your machine with http://[external_ip]/micro
+
+# ssh into scalica
+Add your public ssh key under console.cloud.google.com -> 'Compute Engine' -> 'Metadata'
+ssh using $ `ssh -i [PATH_TO_PRIVATE_KEY] [USERNAME]@[EXTERNAL_IP_ADDRESS]`
+Note: scalica is installed under /root/
+
+# Set up DataFlow and run example job
+Note: bucket has already been created and service account file is located at depot/service-account-file.json 
+(If starting a fresh instance, you will need to scp the credentials from your personal laptop to the VM instance)
+For my instance, the bucket is `lswa-scalica` and the project id is `scalica-224416`
+https://cloud.google.com/dataflow/docs/quickstarts/quickstart-python
+You can view console.cloud.google.com -> 'DataFlow' and console.cloud.google.com -> 'Storage' to monitor the job
+
+# Run a DataFlow job
+Make sure you set google credentials with: `export GOOGLE_APPLICATION_CREDENTIALS="/root/scalica/service-account-file.json"`
+python `path_to_job.py`
+
+# Setting up cron job
+create `cron.txt`
+put `*/10 * * * * bash -c 'cd /root/scalica && source ./env/bin/activate && cd suggestions && python up.py && cd ../dataflow && python follower_suggestion_job.py && cd ../suggestions && python down.py'` in `cron.txt`
+push to crontab using `crontab cron.txt`
+start cron service using `service cron start`
+
+# Project ID
+scalica-224416
