@@ -9,8 +9,20 @@ output_file_name = "df_output.txt-00000-of-00001"
 def handle_suggestions(user):
     user_id = int(user[0])
 
+    cnx = mysql.connector.connect(
+      host="localhost",
+      user="appserver",
+      passwd="foobarzoot",
+      database="scalica"
+    )
+    cursor = cnx.cursor()
+
     cursor.execute("SELECT * FROM micro_following WHERE follower_id = " + str(user_id))
     followees = [followee[2] for followee in cursor.fetchall()]
+    print('followees', followees)
+
+    cursor.close()
+    cnx.close()
 
     # read from output_file_name to create suggestions for user_id
     # this is a list of the top ten highest ranked suggested
