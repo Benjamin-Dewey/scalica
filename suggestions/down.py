@@ -19,7 +19,6 @@ def handle_suggestions(user):
 
     cursor.execute("SELECT * FROM micro_following WHERE follower_id = " + str(user_id))
     followees = [followee[2] for followee in cursor.fetchall()]
-    print('followees', followees)
 
     cursor.close()
     cnx.close()
